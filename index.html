@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radiology Final Test — CAU</title>
+<style>
+/* ============================================================
+   RadiologUz / Central Asian University
+   Radiology Final Test
+   ============================================================ */
+:root{
+  --navy:#23305E;
+  --navy-dark:#18213F;
+  --gold:#C8A24A;
+  --gold-soft:#F3E9D0;
+  --ink:#141A24;
+  --muted:#5D6779;
+  --line:#DFE3EA;
+  --paper:#FFFFFF;
+  --shell:#F2F4F8;
+  --ok:#1F7A4D;
+  --ok-soft:#E4F2EA;
+  --bad:#AE3A32;
+  --bad-soft:#FBE9E7;
+  --radius:6px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  color:var(--ink);
+  background:var(--shell);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+input{font-family:inherit;font-size:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- shell ---------- */
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+.masthead{
+  background:var(--navy);
+  color:#fff;
+  border-bottom:3px solid var(--gold);
+}
+.masthead .wrap{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;min-height:62px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand b{font-size:17px;font-weight:600;letter-spacing:.2px}
+.brand span{font-size:13px;color:#B9C1D8}
+.masthead-meta{font-size:13px;color:#B9C1D8;text-align:right}
+.masthead-meta strong{color:#fff;font-weight:600}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px;
+  margin:24px 0;
+}
+.card.narrow{max-width:460px;margin:56px auto}
+h1{font-size:22px;font-weight:600;margin:0 0 6px;letter-spacing:-.2px}
+h2{font-size:17px;font-weight:600;margin:0 0 14px}
+.lede{color:var(--muted);font-size:14.5px;margin:0 0 22px}
+
+/* ---------- form ---------- */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:5px}
+.field .hint{font-size:12.5px;color:var(--muted);font-weight:400}
+.field input{
+  width:100%;padding:11px 13px;
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:#fff;color:var(--ink);
+}
+.field input:focus{border-color:var(--navy)}
+.field input.bad{border-color:var(--bad);background:var(--bad-soft)}
+
+.btn{
+  display:inline-block;padding:11px 22px;border:1px solid var(--navy);
+  border-radius:var(--radius);background:var(--navy);color:#fff;
+  font-weight:600;font-size:15px;
+}
+.btn:hover{background:var(--navy-dark)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--navy)}
+.btn.ghost:hover{background:#F4F6FA}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#3A2E10}
+.btn.gold:hover{background:#B99138}
+.btn.full{width:100%}
+.btn.sm{padding:7px 14px;font-size:13.5px}
+
+.note{
+  padding:11px 14px;border-radius:var(--radius);font-size:14px;margin:14px 0;
+  border-left:3px solid var(--bad);background:var(--bad-soft);color:#7A241E;
+}
+.note.info{border-left-color:var(--navy);background:#EEF1F8;color:#243056}
+.note.good{border-left-color:var(--ok);background:var(--ok-soft);color:#155C3A}
+.note:empty{display:none}
+
+/* ---------- exam bar ---------- */
+.exambar{
+  position:sticky;top:0;z-index:20;
+  background:var(--paper);border-bottom:1px solid var(--line);
+}
+.exambar .wrap{display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding-top:11px;padding-bottom:11px;flex-wrap:wrap}
+.counter{font-size:14.5px;color:var(--muted)}
+.counter strong{color:var(--ink);font-weight:600}
+.clock{
+  font-variant-numeric:tabular-nums;font-size:21px;font-weight:600;
+  letter-spacing:.5px;padding:3px 12px;border-radius:var(--radius);
+  background:#EEF1F8;color:var(--navy);
+}
+.clock.warn{background:var(--bad-soft);color:var(--bad)}
+
+/* question navigator — 25 markers, one per question */
+.navmap{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 12px}
+.navmap button{
+  width:30px;height:30px;padding:0;border-radius:4px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);
+  font-size:12.5px;font-weight:600;
+}
+.navmap button.done{background:var(--navy);border-color:var(--navy);color:#fff}
+.navmap button.here{box-shadow:inset 0 0 0 2px var(--gold);border-color:var(--gold)}
+.navmap button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.navmap button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+
+/* ---------- question ---------- */
+.qhead{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.qnum{font-size:13px;font-weight:600;color:var(--muted)}
+.tag{
+  font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:20px;
+  border:1px solid var(--line);color:var(--muted);background:#F7F8FB;
+}
+.tag.easy{color:#1F7A4D;border-color:#BEDCCB;background:var(--ok-soft)}
+.tag.medium{color:#8A6A14;border-color:#E6D3A0;background:var(--gold-soft)}
+.tag.hard{color:var(--bad);border-color:#EBC3BF;background:var(--bad-soft)}
+.stem{font-size:18px;line-height:1.5;margin:0 0 18px;white-space:pre-line}
+
+.figure{margin:0 0 20px;text-align:center}
+.figure img{
+  max-width:100%;max-height:440px;border:1px solid var(--line);
+  border-radius:var(--radius);background:#000;cursor:zoom-in;display:block;
+  margin:0 auto 6px;
+}
+.figcap{font-size:12.5px;color:var(--muted)}
+
+.options{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:13px 15px;border:1px solid var(--line);border-radius:var(--radius);
+  background:#fff;text-align:left;width:100%;color:inherit;line-height:1.45;
+}
+.opt:hover{border-color:var(--navy);background:#F7F9FD}
+.opt.picked{border-color:var(--navy);background:#EEF1F8;box-shadow:inset 0 0 0 1px var(--navy)}
+.opt .letter{
+  flex:0 0 26px;height:26px;border-radius:4px;background:#EEF1F8;
+  color:var(--navy);font-weight:600;font-size:13.5px;
+  display:flex;align-items:center;justify-content:center;
+}
+.opt.picked .letter{background:var(--navy);color:#fff}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .letter{background:var(--ok);color:#fff}
+.opt.chosen-wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.chosen-wrong .letter{background:var(--bad);color:#fff}
+
+.footbar{display:flex;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap}
+
+/* ---------- result ---------- */
+.score{
+  display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+  padding:24px 28px;border:1px solid var(--line);border-left:4px solid var(--navy);
+  border-radius:var(--radius);background:#fff;margin-bottom:22px;
+}
+.score .big{font-size:46px;font-weight:600;line-height:1;color:var(--navy);
+  font-variant-numeric:tabular-nums}
+.score .big small{font-size:19px;color:var(--muted);font-weight:400}
+.score dl{margin:0;display:grid;grid-template-columns:auto auto;gap:3px 18px;font-size:14px}
+.score dt{color:var(--muted)}
+.score dd{margin:0;font-weight:600}
+
+table.review{width:100%;border-collapse:collapse;font-size:14px}
+table.review th,table.review td{
+  padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;
+  vertical-align:top;
+}
+table.review th{font-size:12.5px;color:var(--muted);font-weight:600}
+table.review td.mark{width:34px;font-weight:700;text-align:center}
+td.mark.y{color:var(--ok)}
+td.mark.n{color:var(--bad)}
+
+.rev-item{border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin-bottom:14px;background:#fff}
+.rev-item img{max-width:100%;max-height:300px;border:1px solid var(--line);
+  border-radius:4px;cursor:zoom-in;margin-bottom:10px}
+.rev-line{font-size:14px;padding:5px 0}
+.rev-line b{font-weight:600}
+
+/* ---------- lightbox ---------- */
+#lightbox{
+  position:fixed;inset:0;background:rgba(10,14,24,.92);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;
+}
+#lightbox.on{display:flex}
+#lightbox img{max-width:100%;max-height:100%;border-radius:4px}
+#lightbox .close{
+  position:absolute;top:16px;right:20px;background:none;border:0;
+  color:#fff;font-size:30px;line-height:1;padding:6px 12px;
+}
+
+.btn.big{padding:15px 32px;font-size:17px}
+
+/* natija: har savol bo'yicha karta */
+.rc{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--radius);
+  padding:15px 18px;margin-bottom:11px;background:#fff}
+.rc.y{border-left-color:var(--ok)}
+.rc.n{border-left-color:var(--bad)}
+.rc-head{display:flex;align-items:center;gap:9px;margin-bottom:7px;flex-wrap:wrap}
+.rc-no{font-size:13px;font-weight:600;color:var(--muted)}
+.verdict{font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:20px}
+.verdict.y{background:var(--ok-soft);color:var(--ok);border:1px solid #BEDCCB}
+.verdict.n{background:var(--bad-soft);color:var(--bad);border:1px solid #EBC3BF}
+.rc-q{font-size:15.5px;line-height:1.45;margin:0 0 10px;white-space:pre-line}
+.rc-img{max-width:260px;max-height:190px;border:1px solid var(--line);border-radius:4px;
+  background:#000;cursor:zoom-in;display:block;margin:0 0 10px}
+.rc-a{font-size:14px;display:flex;gap:8px;align-items:baseline}
+.rc-a span:first-child{color:var(--muted);flex:0 0 auto}
+.rc-a b{font-weight:600}
+.rc-a.blank b{font-weight:400;font-style:italic;color:var(--muted)}
+.rc-opts{gap:6px}
+.rc-opts .opt{padding:9px 13px;font-size:14.5px;cursor:default}
+.rc-opts .opt:hover{border-color:var(--line);background:#fff}
+.rc-opts .opt.correct:hover{border-color:var(--ok);background:var(--ok-soft)}
+.rc-opts .opt.chosen-wrong:hover{border-color:var(--bad);background:var(--bad-soft)}
+.rc-opts .letter{flex:0 0 23px;height:23px;font-size:12.5px}
+.mk{font-style:normal;font-weight:600;font-size:12.5px;opacity:.8}
+.rc-opts .opt.correct .mk{color:var(--ok)}
+.rc-opts .opt.chosen-wrong .mk{color:var(--bad)}
+
+.foot{text-align:center;color:var(--muted);font-size:12.5px;padding:30px 0 40px}
+.hidden{display:none !important}
+.spin{display:inline-block;width:15px;height:15px;vertical-align:-2px;
+  border:2px solid var(--line);border-top-color:var(--navy);border-radius:50%;
+  animation:sp .7s linear infinite;margin-right:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+@media print{.exambar,.navmap,.footbar,.btn{display:none !important}}
+@media (max-width:620px){
+  .card{padding:20px}
+  .stem{font-size:16.5px}
+  .score{gap:18px;padding:20px}
+  .score .big{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brand">
+      <b>Radiology Final Test</b>
+      <span>Central Asian University</span>
+    </div>
+    <div class="masthead-meta" id="mastheadMeta"></div>
+  </div>
+</header>
+
+<!-- ============ 1. ACCESS CODE ============ -->
+<section id="scrCode">
+  <div class="wrap">
+    <div class="card narrow">
+      <h1>Access code</h1>
+      <p class="lede">Enter the code given by your examiner to open the test.</p>
+      <div class="field">
+        <label for="inCode">Code</label>
+        <input id="inCode" type="password" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="note" id="codeMsg"></div>
+      <button class="btn full" id="btnCode">Unlock</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. STUDENT DETAILS ============ -->
+<section id="scrStart" class="hidden">
+  <div class="wrap">
+    <div class="card narrow">
+      <h1>Before you begin</h1>
+      <p class="lede">25 questions · 25 minutes · 1 point each. You may move back and
+        change an answer. The test submits itself when the time runs out.</p>
+      <div class="field">
+        <label for="inName">Full name</label>
+        <input id="inName" type="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="inGroup">Group number</label>
+        <input id="inGroup" type="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="inId">Student ID <span class="hint">— one attempt per ID</span></label>
+        <input id="inId" type="text" autocomplete="off">
+      </div>
+      <div class="note" id="startMsg"></div>
+      <button class="btn full" id="btnStart">Start the test</button>
+      <p style="margin:18px 0 0;text-align:center">
+        <button class="btn ghost sm" id="btnTeacher">Examiner tools</button>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. EXAM ============ -->
+<section id="scrExam" class="hidden">
+  <div class="exambar">
+    <div class="wrap">
+      <div class="counter">Question <strong id="qPos">1</strong> of <strong id="qTot">25</strong>
+        · answered <strong id="qDone">0</strong></div>
+      <div class="clock" id="clock">25:00</div>
+    </div>
+    <div class="wrap"><div class="navmap" id="navmap"></div></div>
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <div class="qhead">
+        <span class="qnum" id="qNum"></span>
+        <span class="tag" id="qTag"></span>
+      </div>
+      <p class="stem" id="qStem"></p>
+      <div class="figure hidden" id="qFig"></div>
+      <div class="options" id="qOpts"></div>
+      <div class="footbar">
+        <button class="btn ghost" id="btnPrev">Previous</button>
+        <span>
+          <button class="btn ghost" id="btnNext">Next</button>
+          <button class="btn gold" id="btnFinish">Finish and submit</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. RESULT ============ -->
+<section id="scrResult" class="hidden">
+  <div class="wrap">
+    <div class="card">
+      <h1 id="resTitle">Your result</h1>
+      <div class="score">
+        <div class="big"><span id="resScore">0</span><small> / 25</small></div>
+        <dl>
+          <dt>Percentage</dt><dd id="resPct">0%</dd>
+          <dt>Correct</dt><dd id="resRight">0</dd>
+          <dt>Incorrect</dt><dd id="resWrong">0</dd>
+          <dt>Time used</dt><dd id="resTime">—</dd>
+        </dl>
+        <dl>
+          <dt>Name</dt><dd id="resName">—</dd>
+          <dt>Group</dt><dd id="resGroup">—</dd>
+          <dt>Student ID</dt><dd id="resId">—</dd>
+          <dt>Finished</dt><dd id="resWhen">—</dd>
+        </dl>
+      </div>
+      <div class="note" id="saveMsg"></div>
+      <h2>Question by question</h2>
+      <p class="lede">Your answer is marked on every question, together with the
+        correct one. When you have finished reading, your examiner will start the
+        next attempt.</p>
+      <div class="navmap" id="resMap"></div>
+      <div id="resRows"></div>
+      <div class="footbar">
+        <button class="btn ghost" id="btnPrint">Print this page</button>
+        <span>
+          <button class="btn ghost" id="btnUnlockRev">Open full breakdown</button>
+          <button class="btn gold big" id="btnDone">Next student &rarr;</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. FULL BREAKDOWN (examiner) ============ -->
+<section id="scrReview" class="hidden">
+  <div class="wrap">
+    <div class="card">
+      <h1>Full breakdown</h1>
+      <p class="lede" id="revWho"></p>
+      <div id="revList"></div>
+      <div class="footbar">
+        <button class="btn ghost" id="btnRevBack">Back to result</button>
+        <button class="btn ghost" id="btnRevPrint">Print</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. EXAMINER TOOLS ============ -->
+<section id="scrTeacher" class="hidden">
+  <div class="wrap">
+    <div class="card narrow">
+      <h1>Examiner tools</h1>
+      <p class="lede">Clear a student's attempt so they can sit the test again on this
+        computer.</p>
+      <div class="field">
+        <label for="tCode">Access code</label>
+        <input id="tCode" type="password" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="tGroup">Group number</label>
+        <input id="tGroup" type="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="tId">Student ID</label>
+        <input id="tId" type="text" autocomplete="off">
+      </div>
+      <div class="note" id="tMsg"></div>
+      <button class="btn full" id="btnClear">Clear this attempt</button>
+      <p style="margin:14px 0 0"><button class="btn ghost full sm" id="btnSheet">Open the results sheet</button></p>
+      <p style="margin:18px 0 0;text-align:center">
+        <button class="btn ghost sm" id="btnTeacherBack">Back</button>
+      </p>
+    </div>
+  </div>
+</section>
+
+<div id="lightbox"><button class="close" id="lbClose" aria-label="Close">&times;</button><img id="lbImg" alt=""></div>
+
+<p class="foot">RadiologUz · Central Asian University</p>
+
+<script>
+"use strict";
+/* ==========================================================================
+   CONFIGURATION — edit these four values, nothing else.
+   ========================================================================== */
+const CONFIG = {
+  // Apps Script web app URL. Leave as "" to run without a results sheet.
+  APPS_SCRIPT_URL : "https://script.google.com/macros/s/AKfycbwjSgKl2WlD5TaFupnIvUM6ix_P8xH2_RKTew_vaQkxA7Xf_Z8Utk2INpFaWJSIS0Fu/exec",
+  // Link shown behind the "Open the results sheet" button.
+  SHEET_URL       : "https://docs.google.com/spreadsheets/d/1JMmVd4IDCVptaipmFXN_lCdYV5rCtIQ3uP9_T8hZGxs/edit",
+  TOTAL           : 25,
+  PER_LEVEL       : { 1:10, 2:10, 3:5 },   // easy / medium / hard
+  MIN_IMAGE_Q     : 20,
+  MINUTES         : 25,
+  BANK_FILE       : "bank.enc.json",
+  IMAGE_DIR       : "images/",
+  STORE_KEY       : "cau_radiology_final_v1"
+};
+
+const LEVEL_LABEL = { 1:"Easy", 2:"Medium", 3:"Hard" };
+const LEVEL_CLASS = { 1:"easy", 2:"medium", 3:"hard" };
+const LETTERS     = ["A","B","C","D","E","F","G","H","I"];
+
+/* Options such as "All of the above" only make sense in last place, so they
+   are held there while the remaining options are shuffled around them. */
+const PIN_LAST = /^\s*(all of the (above|listed)|all answers|none of the above)\b/i;
+
+/* ==========================================================================
+   STATE
+   ========================================================================== */
+let BANK      = null;   // decrypted question bank
+let ACCESS    = "";     // verified access code
+let EXAM      = [];     // the 25 questions of this sitting (no answer key inside)
+let KEY       = [];     // correct option index per exam question — kept apart
+let PICKED    = [];     // student's chosen option index, or null
+let CURSOR    = 0;
+let DEADLINE  = 0;
+let STARTED   = null;
+let TICKER    = null;
+let BLURS     = 0;
+let SUBMITTED = false;
+let RESULT    = null;
+
+/* ==========================================================================
+   SMALL HELPERS
+   ========================================================================== */
+const $ = id => document.getElementById(id);
+
+function show(id){
+  ["scrCode","scrStart","scrExam","scrResult","scrReview","scrTeacher"]
+    .forEach(s => $(s).classList.toggle("hidden", s !== id));
+  window.scrollTo(0,0);
+}
+function msg(el, text, kind){
+  const n = $(el);
+  n.textContent = text || "";
+  n.className = "note" + (kind ? " " + kind : "");
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+function shuffle(a){
+  const out = a.slice();
+  for (let i = out.length - 1; i > 0; i--){
+    const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+function mmss(sec){
+  sec = Math.max(0, Math.round(sec));
+  return String(Math.floor(sec/60)).padStart(2,"0") + ":" + String(sec%60).padStart(2,"0");
+}
+function attemptKey(group, id){
+  return (group || "").trim().toUpperCase() + "|" + (id || "").trim().toUpperCase();
+}
+
+/* ==========================================================================
+   DECRYPTION  (Web Crypto — no library, works offline)
+   ========================================================================== */
+function b64ToBytes(b64){
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function decryptBank(code){
+  const res = await fetch(CONFIG.BANK_FILE, { cache:"no-store" });
+  if (!res.ok) throw new Error("bank-missing");
+  const pack = await res.json();
+
+  const baseKey = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  const aesKey = await crypto.subtle.deriveKey(
+    { name:"PBKDF2", salt:b64ToBytes(pack.kdf.salt),
+      iterations:pack.kdf.iterations, hash:pack.kdf.hash },
+    baseKey, { name:"AES-GCM", length:256 }, false, ["decrypt"]);
+
+  const plain = await crypto.subtle.decrypt(
+    { name:"AES-GCM", iv:b64ToBytes(pack.iv) }, aesKey, b64ToBytes(pack.data));
+
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+/* ==========================================================================
+   EXAM ASSEMBLY
+   --------------------------------------------------------------------------
+   Rules: 10 easy + 5 medium + 10 hard, drawn at random; at least
+   MIN_IMAGE_Q questions carry an image; no image appears twice in one paper;
+   option order is randomised for every question.
+   ========================================================================== */
+function buildExam(bank){
+  const pools = { 1:[], 2:[], 3:[] };
+  bank.questions.forEach(q => { if (pools[q.level]) pools[q.level].push(q); });
+
+  const need    = CONFIG.PER_LEVEL;
+  const chosen  = { 1:[], 2:[], 3:[] };
+  const withImg = { 1:[], 2:[], 3:[] };
+  const noImg   = { 1:[], 2:[], 3:[] };
+  [1,2,3].forEach(l => pools[l].forEach(q =>
+    (q.images.length ? withImg : noImg)[l].push(q)));
+
+  const usedImages = new Set();
+  const usedIds    = new Set();
+  const free = q => !usedIds.has(q.id) && q.images.every(f => !usedImages.has(f));
+  const take = (q, lvl) => {
+    q.images.forEach(f => usedImages.add(f));
+    usedIds.add(q.id);
+    chosen[lvl].push(q);
+  };
+  const fill = (list, lvl, upTo) => {
+    for (const q of list){
+      if (chosen[lvl].length >= upTo) break;
+      if (free(q)) take(q, lvl);
+    }
+  };
+
+  /* Spread the few text-only slots randomly across the three levels, so that
+     text questions at medium and hard level are reachable too. Without this
+     the image quota would always consume every medium and hard slot and a
+     third of the bank would never be examined. */
+  const textSlots = Math.max(0, CONFIG.TOTAL - CONFIG.MIN_IMAGE_Q);
+  const quota = { 1:0, 2:0, 3:0 };
+  let left = textSlots;
+  while (left > 0){
+    const room = [1,2,3].filter(l =>
+      quota[l] < Math.min(need[l], noImg[l].length));
+    if (!room.length) break;
+    quota[room[crypto.getRandomValues(new Uint32Array(1))[0] % room.length]]++;
+    left--;
+  }
+
+  for (const lvl of [3, 2, 1]){
+    fill(shuffle(noImg[lvl]),   lvl, quota[lvl]);              // text-only share
+    fill(shuffle(withImg[lvl]), lvl, need[lvl]);               // the rest as images
+    fill(shuffle(pools[lvl]),   lvl, need[lvl]);               // top-up if a pool ran dry
+  }
+
+  // easy first, then medium, then hard
+  const ordered = [...shuffle(chosen[1]), ...shuffle(chosen[2]), ...shuffle(chosen[3])];
+
+  EXAM = []; KEY = [];
+  ordered.forEach(q => {
+    const idx    = q.options.map((_, i) => i);
+    const pinned = idx.filter(i => PIN_LAST.test(q.options[i]));
+    const order  = pinned.length
+      ? [...shuffle(idx.filter(i => !pinned.includes(i))), ...pinned]
+      : shuffle(idx);
+    EXAM.push({
+      id: q.id, level: q.level, stem: q.stem,
+      images: q.images.slice(),
+      options: order.map(i => q.options[i])
+    });
+    KEY.push(order.indexOf(q.correct));
+  });
+  PICKED = EXAM.map(() => null);
+}
+
+/* ==========================================================================
+   RENDERING
+   ========================================================================== */
+function renderNav(){
+  const map = $("navmap");
+  map.innerHTML = "";
+  EXAM.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = i + 1;
+    b.title = "Question " + (i + 1);
+    if (PICKED[i] !== null) b.classList.add("done");
+    if (i === CURSOR) b.classList.add("here");
+    b.addEventListener("click", () => { CURSOR = i; renderQuestion(); });
+    map.appendChild(b);
+  });
+  $("qPos").textContent  = CURSOR + 1;
+  $("qTot").textContent  = EXAM.length;
+  $("qDone").textContent = PICKED.filter(v => v !== null).length;
+}
+
+function renderQuestion(){
+  const q = EXAM[CURSOR];
+  $("qNum").textContent = "Question " + (CURSOR + 1);
+  const tag = $("qTag");
+  tag.textContent = LEVEL_LABEL[q.level];
+  tag.className = "tag " + LEVEL_CLASS[q.level];
+  $("qStem").textContent = q.stem;
+
+  const fig = $("qFig");
+  fig.innerHTML = "";
+  fig.classList.toggle("hidden", q.images.length === 0);
+  q.images.forEach(file => {
+    const img = document.createElement("img");
+    img.src = CONFIG.IMAGE_DIR + file;
+    img.alt = "Radiological image for question " + (CURSOR + 1);
+    img.addEventListener("click", () => openLightbox(img.src));
+    fig.appendChild(img);
+  });
+  if (q.images.length){
+    const cap = document.createElement("div");
+    cap.className = "figcap";
+    cap.textContent = "Click the image to enlarge";
+    fig.appendChild(cap);
+  }
+
+  const box = $("qOpts");
+  box.innerHTML = "";
+  q.options.forEach((text, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt" + (PICKED[CURSOR] === i ? " picked" : "");
+    b.innerHTML = '<span class="letter">' + LETTERS[i] + "</span><span>" + esc(text) + "</span>";
+    b.addEventListener("click", () => {
+      PICKED[CURSOR] = (PICKED[CURSOR] === i) ? null : i;
+      renderQuestion();
+    });
+    box.appendChild(b);
+  });
+
+  $("btnPrev").disabled = (CURSOR === 0);
+  $("btnNext").classList.toggle("hidden", CURSOR === EXAM.length - 1);
+  renderNav();
+}
+
+function openLightbox(src){
+  $("lbImg").src = src;
+  $("lightbox").classList.add("on");
+}
+function closeLightbox(){
+  $("lightbox").classList.remove("on");
+  $("lbImg").src = "";
+}
+
+/* ==========================================================================
+   TIMER
+   ========================================================================== */
+function startClock(){
+  DEADLINE = Date.now() + CONFIG.MINUTES * 60000;
+  TICKER = setInterval(tick, 250);
+  tick();
+}
+function tick(){
+  const left = (DEADLINE - Date.now()) / 1000;
+  const c = $("clock");
+  c.textContent = mmss(left);
+  c.classList.toggle("warn", left <= 300);
+  if (left <= 0){
+    clearInterval(TICKER);
+    finish(true);
+  }
+}
+
+/* ==========================================================================
+   ATTEMPT RECORD (this browser)
+   ========================================================================== */
+function localAttempts(){
+  try { return JSON.parse(localStorage.getItem(CONFIG.STORE_KEY) || "{}"); }
+  catch (e){ return {}; }
+}
+function saveLocalAttempt(key, rec){
+  try {
+    const all = localAttempts();
+    all[key] = rec;
+    localStorage.setItem(CONFIG.STORE_KEY, JSON.stringify(all));
+  } catch (e){ /* private mode — the sheet is still the record */ }
+}
+function clearLocalAttempt(key){
+  try {
+    const all = localAttempts();
+    if (!(key in all)) return false;
+    delete all[key];
+    localStorage.setItem(CONFIG.STORE_KEY, JSON.stringify(all));
+    return true;
+  } catch (e){ return false; }
+}
+
+/* remote check — resolves to {taken:boolean, reachable:boolean} */
+async function remoteCheck(key){
+  if (!CONFIG.APPS_SCRIPT_URL) return { taken:false, reachable:false };
+  try {
+    const url = CONFIG.APPS_SCRIPT_URL + "?action=check&key=" + encodeURIComponent(key);
+    const r = await fetch(url, { method:"GET" });
+    const j = await r.json();
+    return { taken: !!j.taken, reachable:true };
+  } catch (e){
+    return { taken:false, reachable:false };
+  }
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* Apps Script sometimes refuses a readable cross-origin POST. When that
+   happens the request is repeated in no-cors mode — the data still reaches
+   the script, we just cannot read the reply — and the result is then
+   confirmed with a GET, which Apps Script always answers. */
+async function sendResult(payload){
+  if (!CONFIG.APPS_SCRIPT_URL) return { ok:false, reason:"no-url" };
+
+  // 1 — normal POST, reply readable
+  try {
+    const r = await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method : "POST",
+      headers: { "Content-Type":"text/plain;charset=utf-8" },
+      body   : JSON.stringify(payload)
+    });
+    const j = await r.json();
+    if (j.ok) return { ok:true, reason:"" };
+    if (j.error === "already-taken") return { ok:true, reason:"already-taken" };
+    return { ok:false, reason: j.error || "rejected" };
+  } catch (e){ /* fall through */ }
+
+  // 2 — blind POST, then verify by reading the sheet back
+  if (payload.action === "clear"){
+    try {
+      await fetch(CONFIG.APPS_SCRIPT_URL, {
+        method:"POST", mode:"no-cors",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      await sleep(1500);
+      const chk = await remoteCheck(payload.key);
+      return { ok: chk.reachable && !chk.taken, reason:"blind" };
+    } catch (e){ return { ok:false, reason:"network" }; }
+  }
+
+  try {
+    await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method:"POST", mode:"no-cors",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+  } catch (e){
+    return { ok:false, reason:"network" };
+  }
+  await sleep(1800);
+  const chk = await remoteCheck(payload.key);
+  if (chk.reachable && chk.taken) return { ok:true, reason:"blind" };
+  return { ok:false, reason: chk.reachable ? "not-stored" : "network" };
+}
+
+/* queued submissions, retried when the network comes back */
+function queueResult(payload){
+  try {
+    const q = JSON.parse(localStorage.getItem(CONFIG.STORE_KEY + "_queue") || "[]");
+    q.push(payload);
+    localStorage.setItem(CONFIG.STORE_KEY + "_queue", JSON.stringify(q));
+  } catch (e){ /* nothing more we can do */ }
+}
+async function flushQueue(){
+  let q;
+  try { q = JSON.parse(localStorage.getItem(CONFIG.STORE_KEY + "_queue") || "[]"); }
+  catch (e){ return; }
+  if (!q.length) return;
+  const left = [];
+  for (const p of q){
+    const r = await sendResult(p);
+    if (!r.ok) left.push(p);
+  }
+  try { localStorage.setItem(CONFIG.STORE_KEY + "_queue", JSON.stringify(left)); }
+  catch (e){ /* ignore */ }
+}
+
+/* ==========================================================================
+   SCREEN 1 — ACCESS CODE
+   ========================================================================== */
+async function unlock(){
+  const code = $("inCode").value.trim();
+  if (!code){ msg("codeMsg", "Enter the access code."); return; }
+
+  const btn = $("btnCode");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Checking';
+  msg("codeMsg", "");
+
+  try {
+    BANK = await decryptBank(code);
+    ACCESS = code;
+    $("mastheadMeta").innerHTML =
+      "<strong>" + BANK.count + "</strong> questions in the bank";
+    flushQueue();
+    show("scrStart");
+  } catch (err){
+    if (err && err.message === "bank-missing"){
+      msg("codeMsg", "bank.enc.json was not found next to this page.");
+    } else {
+      msg("codeMsg", "That code does not open the test. Check it and try again.");
+    }
+    $("inCode").select();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Unlock";
+  }
+}
+
+/* ==========================================================================
+   SCREEN 2 — STUDENT DETAILS
+   ========================================================================== */
+async function beginExam(){
+  const name  = $("inName").value.trim();
+  const group = $("inGroup").value.trim();
+  const sid   = $("inId").value.trim();
+
+  [["inName", name], ["inGroup", group], ["inId", sid]].forEach(([el, v]) =>
+    $(el).classList.toggle("bad", !v));
+  if (!name || !group || !sid){
+    msg("startMsg", "Fill in your name, group number and student ID.");
+    return;
+  }
+
+  const key = attemptKey(group, sid);
+  const btn = $("btnStart");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Checking your record';
+
+  if (localAttempts()[key]){
+    const a = localAttempts()[key];
+    msg("startMsg", "This student ID has already been used on this computer (" +
+        a.score + "/" + CONFIG.TOTAL + ", " + a.when + "). Ask the examiner to clear it.");
+    btn.disabled = false; btn.textContent = "Start the test";
+    return;
+  }
+
+  const chk = await remoteCheck(key);
+  if (chk.taken){
+    msg("startMsg", "The results sheet already has an attempt for this student ID. " +
+        "Ask the examiner to clear it.");
+    btn.disabled = false; btn.textContent = "Start the test";
+    return;
+  }
+
+  RESULT = { name, group, sid, key };
+  buildExam(BANK);
+  CURSOR = 0; BLURS = 0; SUBMITTED = false;
+  STARTED = new Date();
+  show("scrExam");
+  renderQuestion();
+  startClock();
+  btn.disabled = false; btn.textContent = "Start the test";
+}
+
+/* ==========================================================================
+   FINISH AND SCORE
+   ========================================================================== */
+async function finish(auto){
+  if (SUBMITTED) return;
+  const blank = PICKED.filter(v => v === null).length;
+  if (!auto && blank){
+    if (!confirm(blank + " question(s) are still unanswered. Submit anyway?")) return;
+  }
+  SUBMITTED = true;
+  clearInterval(TICKER);
+
+  const finished = new Date();
+  const seconds  = Math.round((finished - STARTED) / 1000);
+  const detail = EXAM.map((q, i) => ({
+    n        : i + 1,
+    id       : q.id,
+    level    : LEVEL_LABEL[q.level],
+    levelNo  : q.level,
+    stemFull : q.stem,
+    stem     : q.stem.replace(/\s*\n\s*/g, " \u00B7 ").slice(0, 120),
+    image    : q.images[0] || "",
+    options  : q.options,
+    picked   : PICKED[i],
+    correct  : KEY[i],
+    isRight  : PICKED[i] === KEY[i]
+  }));
+  const right = detail.filter(d => d.isRight).length;
+  const pct   = Math.round(right / EXAM.length * 1000) / 10;
+
+  Object.assign(RESULT, {
+    score:right, total:EXAM.length, pct, seconds, detail,
+    started:STARTED, finished, auto:!!auto, blurs:BLURS
+  });
+
+  saveLocalAttempt(RESULT.key, {
+    score : right,
+    when  : finished.toLocaleString("en-GB")
+  });
+
+  showResult();
+
+  const payload = {
+    key       : RESULT.key,
+    name      : RESULT.name,
+    group     : RESULT.group,
+    studentId : RESULT.sid,
+    score     : right,
+    total     : EXAM.length,
+    percent   : pct,
+    seconds   : seconds,
+    startedAt : STARTED.toISOString(),
+    finishedAt: finished.toISOString(),
+    autoSubmit: !!auto,
+    tabSwitches: BLURS,
+    answers   : detail.map(d => ({
+      n:d.n, id:d.id, level:d.level, image:d.image,
+      question:d.stem,
+      given:d.picked === null ? "" : d.options[d.picked],
+      correct:d.options[d.correct],
+      ok:d.isRight
+    }))
+  };
+
+  msg("saveMsg", "Saving your result…", "info");
+  const sent = await sendResult(payload);
+  if (sent.ok){
+    msg("saveMsg", "Your result has been saved.", "good");
+  } else if (sent.reason === "no-url"){
+    msg("saveMsg", "No results sheet is configured, so this result was not saved online.", "info");
+  } else {
+    queueResult(payload);
+    msg("saveMsg", "No connection — the result is stored on this computer and will be " +
+        "sent automatically next time the test is opened online.", "info");
+  }
+}
+
+function showResult(){
+  const r = RESULT;
+  $("resTitle").textContent = r.auto ? "Time is up — here is your result" : "Your result";
+  $("resScore").textContent = r.score;
+  $("resPct").textContent   = r.pct + "%";
+  $("resRight").textContent = r.score;
+  $("resWrong").textContent = r.total - r.score;
+  $("resTime").textContent  = mmss(r.seconds);
+  $("resName").textContent  = r.name;
+  $("resGroup").textContent = r.group;
+  $("resId").textContent    = r.sid;
+  $("resWhen").textContent  = r.finished.toLocaleString("en-GB");
+
+  const map = $("resMap");
+  map.innerHTML = "";
+  r.detail.forEach(d => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = d.n;
+    b.className = d.isRight ? "right" : "wrong";
+    b.title = d.isRight ? "Correct" : "Incorrect";
+    map.appendChild(b);
+  });
+
+  const rows = $("resRows");
+  rows.innerHTML = "";
+  r.detail.forEach(d => {
+    const card = document.createElement("div");
+    card.className = "rc " + (d.isRight ? "y" : "n");
+
+    const head = document.createElement("div");
+    head.className = "rc-head";
+    head.innerHTML = '<span class="rc-no">Question ' + d.n + "</span>" +
+      '<span class="tag ' + LEVEL_CLASS[d.levelNo] + '">' + d.level + "</span>" +
+      '<span class="verdict ' + (d.isRight ? "y" : "n") + '">' +
+      (d.isRight ? "Correct" : "Incorrect") + "</span>";
+    card.appendChild(head);
+
+    const q = document.createElement("p");
+    q.className = "rc-q";
+    q.textContent = d.stemFull || d.stem;
+    card.appendChild(q);
+
+    if (d.image){
+      const img = document.createElement("img");
+      img.className = "rc-img";
+      img.src = CONFIG.IMAGE_DIR + d.image;
+      img.alt = "Image for question " + d.n;
+      img.addEventListener("click", () => openLightbox(img.src));
+      card.appendChild(img);
+    }
+
+    const opts = document.createElement("div");
+    opts.className = "options rc-opts";
+    d.options.forEach((text, i) => {
+      const row = document.createElement("div");
+      let cls = "opt", mark = "";
+      if (i === d.correct){
+        cls += " correct";
+        mark = (i === d.picked) ? " — your answer, correct"
+                                : " — correct answer";
+      } else if (i === d.picked){
+        cls += " chosen-wrong";
+        mark = " — your answer";
+      }
+      row.className = cls;
+      row.innerHTML = '<span class="letter">' + LETTERS[i] + "</span><span>" +
+                      esc(text) + '<i class="mk">' + esc(mark) + "</i></span>";
+      opts.appendChild(row);
+    });
+    card.appendChild(opts);
+
+    if (d.picked === null){
+      const nb = document.createElement("div");
+      nb.className = "rc-a blank";
+      nb.innerHTML = "<span></span><b>You did not answer this question.</b>";
+      card.appendChild(nb);
+    }
+
+    rows.appendChild(card);
+  });
+  show("scrResult");
+}
+
+/* ==========================================================================
+   FULL BREAKDOWN — examiner only
+   ========================================================================== */
+function openReview(){
+  const code = prompt("Access code to open the full breakdown:");
+  if (code === null) return;
+  if (code.trim() !== ACCESS){ alert("That code is not correct."); return; }
+
+  $("revWho").textContent =
+    RESULT.name + " · group " + RESULT.group + " · ID " + RESULT.sid +
+    " · " + RESULT.score + "/" + RESULT.total + " (" + RESULT.pct + "%)";
+
+  const list = $("revList");
+  list.innerHTML = "";
+  RESULT.detail.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "rev-item";
+
+    const head = document.createElement("div");
+    head.className = "qhead";
+    head.innerHTML = '<span class="qnum">Question ' + d.n + "</span>" +
+                     '<span class="tag">' + d.level + "</span>" +
+                     '<span class="tag ' + (d.isRight ? "easy" : "hard") + '">' +
+                     (d.isRight ? "Correct" : "Incorrect") + "</span>";
+    div.appendChild(head);
+
+    const stem = document.createElement("p");
+    stem.className = "stem";
+    stem.style.fontSize = "16px";
+    stem.textContent = d.stemFull || d.stem;
+    div.appendChild(stem);
+
+    if (d.image){
+      const img = document.createElement("img");
+      img.src = CONFIG.IMAGE_DIR + d.image;
+      img.alt = "Image for question " + d.n;
+      img.addEventListener("click", () => openLightbox(img.src));
+      div.appendChild(img);
+    }
+
+    const opts = document.createElement("div");
+    opts.className = "options";
+    d.options.forEach((text, i) => {
+      const row = document.createElement("div");
+      let cls = "opt";
+      if (i === d.correct) cls += " correct";
+      else if (i === d.picked) cls += " chosen-wrong";
+      row.className = cls;
+      let suffix = "";
+      if (i === d.correct) suffix = " — correct answer";
+      if (i === d.picked && i !== d.correct) suffix = " — chosen";
+      row.innerHTML = '<span class="letter">' + LETTERS[i] + "</span><span>" +
+                      esc(text) + esc(suffix) + "</span>";
+      opts.appendChild(row);
+    });
+    div.appendChild(opts);
+
+    if (d.picked === null){
+      const p = document.createElement("div");
+      p.className = "rev-line";
+      p.innerHTML = "<b>Not answered.</b>";
+      div.appendChild(p);
+    }
+    list.appendChild(div);
+  });
+  show("scrReview");
+}
+
+/* ==========================================================================
+   EXAMINER TOOLS
+   ========================================================================== */
+async function clearAttempt(){
+  if ($("tCode").value.trim() !== ACCESS){
+    msg("tMsg", "That code is not correct."); return;
+  }
+  const group = $("tGroup").value.trim();
+  const sid   = $("tId").value.trim();
+  if (!group || !sid){ msg("tMsg", "Enter the group number and the student ID."); return; }
+
+  const key = attemptKey(group, sid);
+  const localGone = clearLocalAttempt(key);
+
+  let remote = "";
+  if (CONFIG.APPS_SCRIPT_URL){
+    const r = await sendResult({ action:"clear", key, code:ACCESS });
+    remote = r.ok ? " The sheet entry was released as well."
+                  : " The sheet could not be reached, so only this computer was cleared.";
+  }
+  msg("tMsg", (localGone ? "Attempt cleared on this computer."
+                         : "No attempt was stored on this computer for that ID.") + remote,
+      localGone ? "good" : "info");
+  $("tGroup").value = ""; $("tId").value = "";
+}
+
+/* ==========================================================================
+   WIRING
+   ========================================================================== */
+$("btnCode").addEventListener("click", unlock);
+$("inCode").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+
+$("btnStart").addEventListener("click", beginExam);
+["inName","inGroup","inId"].forEach(id =>
+  $(id).addEventListener("keydown", e => { if (e.key === "Enter") beginExam(); }));
+
+$("btnPrev").addEventListener("click", () => {
+  if (CURSOR > 0){ CURSOR--; renderQuestion(); }
+});
+$("btnNext").addEventListener("click", () => {
+  if (CURSOR < EXAM.length - 1){ CURSOR++; renderQuestion(); }
+});
+$("btnFinish").addEventListener("click", () => finish(false));
+
+$("btnPrint").addEventListener("click", () => window.print());
+$("btnRevPrint").addEventListener("click", () => window.print());
+$("btnUnlockRev").addEventListener("click", openReview);
+$("btnRevBack").addEventListener("click", () => show("scrResult"));
+$("btnDone").addEventListener("click", () => {
+  RESULT = null; EXAM = []; KEY = []; PICKED = [];
+  $("inName").value = ""; $("inGroup").value = ""; $("inId").value = "";
+  msg("startMsg", "");
+  show("scrStart");
+});
+
+$("btnTeacher").addEventListener("click", () => { msg("tMsg",""); show("scrTeacher"); });
+$("btnTeacherBack").addEventListener("click", () => show("scrStart"));
+$("btnClear").addEventListener("click", clearAttempt);
+$("btnSheet").addEventListener("click", () => {
+  if (CONFIG.SHEET_URL) window.open(CONFIG.SHEET_URL, "_blank");
+  else msg("tMsg", "No sheet address is set in CONFIG.SHEET_URL.");
+});
+
+$("lightbox").addEventListener("click", closeLightbox);
+$("lbClose").addEventListener("click", closeLightbox);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && $("lightbox").classList.contains("on")){ closeLightbox(); return; }
+  if ($("scrExam").classList.contains("hidden")) return;
+  if (e.key === "ArrowRight" && CURSOR < EXAM.length - 1){ CURSOR++; renderQuestion(); }
+  if (e.key === "ArrowLeft"  && CURSOR > 0){ CURSOR--; renderQuestion(); }
+  const n = "123456789".indexOf(e.key);
+  if (n >= 0 && n < EXAM[CURSOR].options.length){
+    PICKED[CURSOR] = (PICKED[CURSOR] === n) ? null : n;
+    renderQuestion();
+  }
+});
+
+/* record how often the student leaves the page mid-exam */
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && !$("scrExam").classList.contains("hidden") && !SUBMITTED) BLURS++;
+});
+window.addEventListener("beforeunload", e => {
+  if (!$("scrExam").classList.contains("hidden") && !SUBMITTED){
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+show("scrCode");
+$("inCode").focus();
+</script>
+</body>
+</html>
